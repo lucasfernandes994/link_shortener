@@ -10,7 +10,8 @@ import 'package:main/src/home/domain/repository/short_url_repository.dart';
 
 @Injectable(as: ShortUrlRepository)
 class ShortUrlRepositoryImpl implements ShortUrlRepository {
-  final _baseUrl = "https://url-shortener-nu.herokuapp.com";
+  //final _baseUrl = "url-shortener-nu.herokuapp.com";
+  final _baseUrl = "98b823f4-3db2-4bd5-9073-0b5429d139ed.mock.pstmn.io";
   final ApiEngineer _apiEngineer;
   final UriFactory _uriFactory;
 
@@ -18,14 +19,18 @@ class ShortUrlRepositoryImpl implements ShortUrlRepository {
 
   @override
   Future<Either<Failure, AliasEntity>> shortUrl(String url) async {
-    final uri = _uriFactory.create(_baseUrl, "/api/alias");
-    final response = await _apiEngineer.postSafeRequest(
-      uri,
-      null,
-      ShortUrlRequest(url).toRequest(),
-    );
-    final json = jsonDecode(response.body);
+    try {
+      final uri = _uriFactory.create(_baseUrl, "/api/alias");
+      final response = await _apiEngineer.postSafeRequest(
+        uri,
+        null,
+        ShortUrlRequest(url).toRequest(),
+      );
+      final json = jsonDecode(response.body);
 
-    return Right(AliasModelResponse.fromJson(json));
+      return Right(AliasModelResponse.fromJson(json));
+    } on Exception catch (e) {
+      return Left(DataFailure(e.toString()));
+    }
   }
 }

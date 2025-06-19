@@ -6,7 +6,15 @@ class AliasModelResponse extends AliasEntity {
   factory AliasModelResponse.fromJson(Map<String, dynamic> json) {
     return AliasModelResponse(
       json['alias'],
-      List<String>.from(json["links"].map((x) => x)),
+      LinksModelResponse.fromJson(json['_links'] ?? {}),
     );
+  }
+}
+
+class LinksModelResponse extends LinksEntity {
+  LinksModelResponse(super.self, super.short);
+
+  factory LinksModelResponse.fromJson(Map<String, dynamic> json) {
+    return LinksModelResponse(json['self'] ?? '', json['short'] ?? '');
   }
 }

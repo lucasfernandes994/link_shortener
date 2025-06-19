@@ -13,9 +13,18 @@ class ShortUrlUseCase implements BaseUseCase<AliasEntity, String> {
   @override
   Future<Either<Failure, AliasEntity>> call(String params) async {
     if (params.isEmpty) {
-      return Left(IllegalArgumentFailure("Alias cannot be empty."));
+      return Left(IllegalArgumentFailure("Url cannot be empty."));
+    }
+
+    if (!_isValidUrl(params)) {
+      return Left(IllegalArgumentFailure("Invalid url."));
     }
 
     return _repository.shortUrl(params);
+  }
+
+  bool _isValidUrl(String input) {
+    final uri = Uri.tryParse(input);
+    return uri != null;
   }
 }

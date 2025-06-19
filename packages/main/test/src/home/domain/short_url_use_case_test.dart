@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart' show Left, Right;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:main/src/home/domain/entity/alias_entity.dart' show AliasEntity;
+import 'package:main/src/home/domain/entity/alias_entity.dart'
+    show AliasEntity, LinksEntity;
 import 'package:main/src/home/domain/repository/short_url_repository.dart';
 import 'package:main/src/home/domain/use_case/short_url_use_case.dart'
     show ShortUrlUseCase;
@@ -18,7 +19,7 @@ void main() {
   });
 
   test('should return alias entity when call use case', () async {
-    final alias = AliasEntity("", []);
+    final alias = AliasEntity("", LinksEntity("", ""));
     //  Given
     when(
       () => repository.shortUrl("google.com"),
@@ -31,7 +32,12 @@ void main() {
   });
 
   test('should return failure when url is empty', () async {
-    final result = await useCase.call("");
+    final result = await useCase("");
+    expect(result, isA<Left>());
+  });
+
+  test('should return failure when url is invalid', () async {
+    final result = await useCase("abcde");
     expect(result, isA<Left>());
   });
 }

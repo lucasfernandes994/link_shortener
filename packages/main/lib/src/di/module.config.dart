@@ -16,6 +16,7 @@ import 'package:injectable/injectable.dart' as _i526;
 import '../home/data/repository/short_url_repository_impl.dart' as _i280;
 import '../home/domain/repository/short_url_repository.dart' as _i743;
 import '../home/domain/use_case/short_url_use_case.dart' as _i287;
+import '../home/presenter/home_controller.dart' as _i636;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -32,6 +33,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i287.ShortUrlUseCase>(
       () => _i287.ShortUrlUseCase(gh<_i743.ShortUrlRepository>()),
+    );
+    gh.factory<_i636.HomeController>(
+      () => _i636.HomeController(gh<_i287.ShortUrlUseCase>()),
     );
     return this;
   }
