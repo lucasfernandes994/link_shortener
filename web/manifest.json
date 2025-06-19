@@ -1,6 +1,6 @@
 {
-    "name": "link_shorten",
-    "short_name": "link_shorten",
+    "name": "link_shortener",
+    "short_name": "link_shortener",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

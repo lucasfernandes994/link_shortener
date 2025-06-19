@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:main/src/detail/detail_screen.dart';
 import 'package:main/src/home/domain/entity/alias_entity.dart';
 import 'package:main/src/ui/modal.dart';
 import 'package:main/src/ui/ui_decoration.dart';
@@ -13,20 +14,23 @@ import 'home_state.dart';
 
 class HomeScreen extends StatefulWidget {
   static const route = '/';
+  final HomeController homeController;
 
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key, required this.homeController}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState(homeController);
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _homeController = GetIt.instance<HomeController>();
+  final HomeController homeController;
+
+  _HomeScreenState(this.homeController);
 
   @override
   void initState() {
     super.initState();
-    _homeController.init();
+    homeController.init();
   }
 
   @override
@@ -37,15 +41,18 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           backgroundColor: Colors.black,
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: UiSizes.lg.value,
+            fontWeight: FontWeight.bold,
+          ),
+          centerTitle: true,
           title: Text(
             "Link shortener",
-            style: UiKitTextStyle.style.large(
-              weight: FontWeight.bold,
-              color: Colors.white,
-            ),
+            style: UiKitTextStyle.style.large(color: Colors.white),
           ),
         ),
-        body: _Content(homeController: _homeController),
+        body: _Content(homeController: homeController),
       ),
     );
   }
@@ -86,7 +93,11 @@ class _Content extends StatelessWidget {
         return Form(
           key: _formKey,
           child: Container(
-            padding: EdgeInsets.all(UiSizes.sm.value),
+            padding: EdgeInsets.only(
+              left: UiSizes.sm.value,
+              right: UiSizes.sm.value,
+              top: UiSizes.lg.value,
+            ),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
@@ -98,18 +109,14 @@ class _Content extends StatelessWidget {
                       homeController.short(_controller.text);
                     },
                   ),
-                  SizedBox(height: UiSizes.sm.value),
+                  SizedBox(height: UiSizes.lg.value),
+                  Text(
+                    "Recently shortened links",
+                    style: UiKitTextStyle.style.small(color: Colors.white),
+                  ),
                   state is HomeLoadingState
                       ? CircularProgressIndicator(color: Colors.white)
                       : SizedBox.shrink(),
-                  SizedBox(height: UiSizes.sm.value),
-                  Text(
-                    "Recently shortened links",
-                    style: UiKitTextStyle.style.large(
-                      weight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
                   SizedBox(height: UiSizes.sm.value),
                   ...items,
                 ],
@@ -130,37 +137,66 @@ class _ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      child: Card(
-        borderOnForeground: true,
-        elevation: UiSizes.xxs.value,
-        shadowColor: Colors.black,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(UiSizes.xs.value)),
+    return Card(
+      borderOnForeground: true,
+      elevation: UiSizes.xxs.value,
+      shadowColor: Colors.black,
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(UiSizes.xs.value)),
+      ),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color.fromARGB(255, 123, 5, 145), Colors.blue.shade300],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
         ),
         child: Row(
           children: [
-            Text(
-              aliasEntity.alias,
-              style: UiKitTextStyle.style.large(color: Colors.black),
-            ).padding(padding: EdgeInsets.all(UiSizes.xs.value)),
+            Column(
+              children: [
+                Text(
+                  aliasEntity.alias,
+                  style: UiKitTextStyle.style.large(color: Colors.white),
+                ).padding(
+                  padding: EdgeInsets.only(
+                    top: UiSizes.sm.value,
+                    left: UiSizes.sm.value,
+                  ),
+                ),
+                Text(
+                  aliasEntity.links.short,
+                  style: UiKitTextStyle.style.small(color: Colors.white),
+                ).padding(
+                  padding: EdgeInsets.only(
+                    top: UiSizes.xs.value,
+                    bottom: UiSizes.sm.value,
+                  ),
+                ),
+              ],
+            ),
             Spacer(),
             IconButton(
               onPressed: () {
                 homeController.remove(aliasEntity);
               },
-              icon: Icon(Icons.delete),
+              icon: Icon(
+                Icons.delete,
+                color: Colors.white,
+                size: UiSizes.sm.value * 2,
+              ),
             ),
           ],
         ),
-      ).onTap(
-        onTap: () {
-          // TODO
-        },
       ),
+    ).onTap(
+      onTap: () {
+        context.go(DetailScreen.getRoute(aliasEntity.alias).toString());
+      },
     );
   }
 }

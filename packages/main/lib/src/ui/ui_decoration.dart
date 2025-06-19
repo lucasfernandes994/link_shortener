@@ -38,6 +38,7 @@ class _UiBackgroundDecotationFactory {
           Colors.black,
           Color.fromARGB(255, 52, 0, 121),
           Color.fromARGB(255, 114, 3, 255),
+          Color.fromARGB(255, 123, 5, 145),
         ],
       ),
     );
