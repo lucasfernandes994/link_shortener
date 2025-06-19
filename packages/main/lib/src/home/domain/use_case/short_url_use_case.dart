@@ -16,15 +16,23 @@ class ShortUrlUseCase implements BaseUseCase<AliasEntity, String> {
       return Left(IllegalArgumentFailure("Url cannot be empty."));
     }
 
-    if (!_isValidUrl(params)) {
+    if (!isLinkValid(params)) {
       return Left(IllegalArgumentFailure("Invalid url."));
     }
 
-    return _repository.shortUrl(params);
+    final result = await _repository.shortUrl(params);
+    result.fold(
+      (f) => print(f),
+      (data) async => await _repository.saveAlias(data),
+    );
+
+    return result;
   }
 
-  bool _isValidUrl(String input) {
-    final uri = Uri.tryParse(input);
-    return uri != null;
+  bool isLinkValid(String url) {
+    final regex = RegExp(
+      r'^(https?:\/\/)?(www\.)?([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/\S*)?$',
+    );
+    return regex.hasMatch(url);
   }
 }

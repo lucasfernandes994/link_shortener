@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:main/src/home/domain/entity/alias_entity.dart';
 
 class AliasModelResponse extends AliasEntity {
@@ -17,4 +19,6 @@ class LinksModelResponse extends LinksEntity {
   factory LinksModelResponse.fromJson(Map<String, dynamic> json) {
     return LinksModelResponse(json['self'] ?? '', json['short'] ?? '');
   }
+
+
 }

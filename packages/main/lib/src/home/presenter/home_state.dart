@@ -1,25 +1,25 @@
 import 'package:main/src/home/domain/entity/alias_entity.dart';
 
 sealed class HomeState {
-  final List<AliasEntity> alias;
+  final List<AliasEntity> aliases;
 
-  HomeState(this.alias);
+  HomeState(this.aliases);
 }
 
 class HomeInitial extends HomeState {
-  HomeInitial(super.alias);
+  HomeInitial(super.aliases);
 }
 
 class HomeLoadingState extends HomeState {
-  HomeLoadingState(super.alias);
+  HomeLoadingState(super.aliases);
 }
 
 class HomeErrorState extends HomeState {
   final String message;
 
-  HomeErrorState(this.message, super.alias);
+  HomeErrorState(this.message, super.aliases);
 }
 
 class DataState extends HomeState {
-  DataState(super.alias);
+  DataState(super.aliases);
 }

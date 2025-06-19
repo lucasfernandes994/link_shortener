@@ -16,6 +16,8 @@ import 'package:logger/logger.dart' as _i974;
 import '../data/enginner/api_engineer.dart' as _i713;
 import '../data/enginner/api_engineer_impl.dart' as _i249;
 import '../data/http/http.dart' as _i6;
+import '../storage/local_storage.dart' as _i329;
+import '../storage/local_storage_impl.dart' as _i28;
 import '../utils/uri_factory.dart' as _i456;
 import 'module.dart' as _i946;
 
@@ -33,6 +35,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i713.ApiEngineer>(
       () => _i249.ApiEngineerImpl(gh<_i6.Http>(), gh<_i974.Logger>()),
     );
+    gh.factory<_i329.LocalStorage>(() => _i28.LocalStorageImpl());
     return this;
   }
 }

@@ -37,7 +37,7 @@ void main() {
   });
 
   test('should return failure when url is invalid', () async {
-    final result = await useCase("abcde");
+    final result = await useCase("abcde ,s");
     expect(result, isA<Left>());
   });
 }

@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         },
       ),
       debugShowCheckedModeBanner: false,
-      title: 'Shorten Url',
+      title: 'Link shortener',
       supportedLocales: [Locale('en')],
       localizationsDelegates: [],
     );

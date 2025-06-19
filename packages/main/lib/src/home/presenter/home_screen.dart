@@ -24,6 +24,12 @@ class _HomeScreenState extends State<HomeScreen> {
   final _homeController = GetIt.instance<HomeController>();
 
   @override
+  void initState() {
+    super.initState();
+    _homeController.init();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: UiDecotation.background.dark(),
@@ -32,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text(
-            "Url shorten",
+            "Link shortener",
             style: UiKitTextStyle.style.large(
               weight: FontWeight.bold,
               color: Colors.white,
@@ -70,7 +76,12 @@ class _Content extends StatelessWidget {
         }
 
         final List<Widget> items =
-            state.alias.map((e) => _ListItem(aliasEntity: e)).toList();
+            state.aliases
+                .map(
+                  (e) =>
+                      _ListItem(aliasEntity: e, homeController: homeController),
+                )
+                .toList();
 
         return Form(
           key: _formKey,
@@ -92,6 +103,14 @@ class _Content extends StatelessWidget {
                       ? CircularProgressIndicator(color: Colors.white)
                       : SizedBox.shrink(),
                   SizedBox(height: UiSizes.sm.value),
+                  Text(
+                    "Recently shortened links",
+                    style: UiKitTextStyle.style.large(
+                      weight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: UiSizes.sm.value),
                   ...items,
                 ],
               ),
@@ -105,8 +124,9 @@ class _Content extends StatelessWidget {
 
 class _ListItem extends StatelessWidget {
   final AliasEntity aliasEntity;
+  final HomeController homeController;
 
-  const _ListItem({required this.aliasEntity});
+  const _ListItem({required this.aliasEntity, required this.homeController});
 
   @override
   Widget build(BuildContext context) {
@@ -121,12 +141,19 @@ class _ListItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(UiSizes.xs.value)),
         ),
-        child: Column(
+        child: Row(
           children: [
             Text(
               aliasEntity.alias,
               style: UiKitTextStyle.style.large(color: Colors.black),
             ).padding(padding: EdgeInsets.all(UiSizes.xs.value)),
+            Spacer(),
+            IconButton(
+              onPressed: () {
+                homeController.remove(aliasEntity);
+              },
+              icon: Icon(Icons.delete),
+            ),
           ],
         ),
       ).onTap(
@@ -193,8 +220,8 @@ class ChatInput extends StatelessWidget {
               icon: const Icon(Icons.send, color: Colors.white),
               onPressed: () {
                 if (formKey.currentState!.validate()) {
-                  controller.clear();
                   onTap();
+                  controller.clear();
                 }
               },
             ),
